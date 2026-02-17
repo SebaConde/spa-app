@@ -6,11 +6,14 @@ import { getCurrenUser } from "@/lib/actions/user";
 import Loader from "@/components/ui/loader";
 import ErrorMessage from "@/components/ui/error-message";
 import userGlobalStore, { IUserGlobalStore } from "../store/users-global-store";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 function PrivateLayout({ children }: { children: React.ReactNode }) {
   const {user, setUser} = userGlobalStore() as IUserGlobalStore;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const router = useRouter()
 
   const fetchUser = async () => {
     try {
@@ -23,6 +26,9 @@ function PrivateLayout({ children }: { children: React.ReactNode }) {
         setError(response.message);
       }
     } catch (error: any) {
+      Cookies.remove('token');
+      toast.error(error.message);
+      router.push('/login');
       setError(error.message);
     } finally {
       setLoading(false);

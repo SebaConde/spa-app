@@ -51,7 +51,6 @@ export default function LoginPage() {
         Cookies.set('token', response.data || "");
         Cookies.set('role', data.role.toString() || "" )
         router.push(`/${data.role}/dashboard`);
-         
       }else{
         toast.error(response.message);
       }
@@ -64,80 +63,79 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
-    
-    <div className="bg-white p-8 rounded-lg shadow-md w-125">
-      <h1 className="text-2xl font-bold">Login</h1>
-      <hr className="my-7 border-t border-gray-300"/>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>email</FormLabel>
-                <FormControl>
-                  <Input placeholder="email" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>password</FormLabel>
-                <FormControl>
-                  <Input placeholder="password" {...field} type="password" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-         
+      <div className="bg-white p-8 rounded-lg shadow-md w-125">
+        <h1 className="text-2xl font-bold">Login</h1>
+        <hr className="my-7 border-t border-gray-300"/>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <FormField
               control={form.control}
-              name="role"
+              name="email"
               render={({ field }) => (
-                <FormItem className="space-y-3">
-                  <FormLabel>Role</FormLabel>
+                <FormItem>
+                  <FormLabel>email</FormLabel>
                   <FormControl>
-                    <RadioGroup
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      className="flex space-x-20"
-                    >
-                      <FormItem className="flex items-center space-x-3 space-y-0">
-                        <FormControl>
-                          <RadioGroupItem value="user" />
-                        </FormControl>
-                        <FormLabel className="font-normal">User</FormLabel>
-                      </FormItem>
-                      <FormItem className="flex items-center space-x-3 space-y-0">
-                        <FormControl>
-                          <RadioGroupItem value="admin" />
-                        </FormControl>
-                        <FormLabel className="font-normal">
-                          Admin
-                        </FormLabel>
-                      </FormItem>
-                    </RadioGroup>
+                    <Input placeholder="email" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <div className="flex justify-between items-center">
-              <div className="flex gap-5 text-sm">
-                No tiene una cuenta?<Link href='/register' className="underline">Register</Link>
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>password</FormLabel>
+                  <FormControl>
+                    <Input placeholder="password" {...field} type="password" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          
+              <FormField
+                control={form.control}
+                name="role"
+                render={({ field }) => (
+                  <FormItem className="space-y-3">
+                    <FormLabel>Role</FormLabel>
+                    <FormControl>
+                      <RadioGroup
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        className="flex space-x-20"
+                      >
+                        <FormItem className="flex items-center space-x-3 space-y-0">
+                          <FormControl>
+                            <RadioGroupItem value="user" />
+                          </FormControl>
+                          <FormLabel className="font-normal">User</FormLabel>
+                        </FormItem>
+                        <FormItem className="flex items-center space-x-3 space-y-0">
+                          <FormControl>
+                            <RadioGroupItem value="admin" />
+                          </FormControl>
+                          <FormLabel className="font-normal">
+                            Admin
+                          </FormLabel>
+                        </FormItem>
+                      </RadioGroup>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="flex justify-between items-center">
+                <div className="flex gap-5 text-sm">
+                  No tiene una cuenta?<Link href='/register' className="underline">Register</Link>
+                </div>
+                <Button type="submit" disabled={loading}>LOGIN</Button>
               </div>
-               <Button type="submit" disabled={loading}>LOGIN</Button>
-            </div>
-        </form>
-      </Form>
-    </div>
+          </form>
+        </Form>
+      </div>
   </div>
   );
 }
