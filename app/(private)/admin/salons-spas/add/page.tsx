@@ -6,7 +6,7 @@ function AddSalonSpa() {
   return (
     <div>
       <PageTitle title="Agregar Salons & Spas" />
-      <SalonSpaForms />
+      <SalonSpaForms formType='add' />
     </div>
   );
 }

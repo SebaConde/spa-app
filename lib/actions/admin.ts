@@ -2,10 +2,11 @@
 "use server";
 
 import { supabase } from "@/src/config/supabase-config";
+import { flightRouterStateSchema } from "next/dist/server/app-render/types";
 
 export const createNewSalonSpa = async (payload: any) => {
   try {
-    const { data, error } = await supabase.from("salon_spas").insert(payload);
+    const { data, error } = await supabase.from("salons_spas").insert(payload);
     if (error) throw error;
     return {
       success: true,
@@ -19,12 +20,12 @@ export const createNewSalonSpa = async (payload: any) => {
   }
 };
 
-export const getSalonsByOwner = async (owner_id: string) => {
+export const getSalonsByOwner = async (owner_id: number) => {
   try {
-    const {data, error} = await supabase.from('salon_spas').select("*").eq('owner_id', owner_id);
+    const {data, error} = await supabase.from('salons_spas').select("*").eq('owner_id', owner_id);
     if(error) throw new Error('No se pudo encontrar ningún salón.');
     return{
-        sucess: true,
+        success: true,
         data: data,
     }
   } catch (error: any) {
@@ -37,7 +38,7 @@ export const getSalonsByOwner = async (owner_id: string) => {
 
 export const getSalonSpaById = async (salon_id: string) => {
     try {
-        const {data, error} = await supabase.from('salon_spas').select('*').eq('id', salon_id);
+        const {data, error} = await supabase.from('salons_spas').select('*').eq('id', salon_id);
         if(error || data.length===0) throw new Error('No se pudo encontrar ningún salón con ese id.')
         return{
             success:true,
@@ -69,7 +70,7 @@ try {
 
 export const deleteSalonSpaById = async (salon_id: string) => {
     try {
-        const {error} = await supabase.from('salon_spas').delete().eq('id',salon_id);
+        const {error} = await supabase.from('salons_spas').delete().eq('id',salon_id);
          if(error) throw new Error('No se pudo eliminar el salón.');
          return{
             success: true,

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -24,6 +24,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { workingDays } from "@/src/constants";
+import { Checkbox } from "@/components/ui/checkbox";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import userGlobalStore, { IUserGlobalStore } from "@/src/store/users-global-store";
+import { createNewSalonSpa, editSalonSpaById } from "@/lib/actions/admin";
 
 interface SalonSpaFormProps {
   initialValues?: any;
@@ -35,7 +41,12 @@ const offerStatuses = [
   { value: "inactive", label: "Inactive" },
 ];
 
-function SalonSpaForms() {
+function SalonSpaForms({ initialValues, formType }: SalonSpaFormProps) {
+
+  const [loading, setLoading] = useState(false); 
+  const router = useRouter();
+  const {user} = userGlobalStore() as IUserGlobalStore;
+
   const formSchema = z.object({
     name: z.string().nonempty(),
     description: z.string().nonempty(),
@@ -53,9 +64,9 @@ function SalonSpaForms() {
     offer_status: z.string().nonempty(),
     slot_duration: z.number(),
     max_bookings_per_slot: z.number(),
-    location_name: z.string().nonempty(),
-    latitude: z.string().nonempty(),
-    longitude: z.string().nonempty(),
+    location_name: z.string(),
+    latitude: z.string(),
+    longitude: z.string(),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -83,13 +94,51 @@ function SalonSpaForms() {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log("onSubmit");
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      setLoading(true);
+      let response = null;
+      if (formType==='add') {
+        response = await createNewSalonSpa({...values, owner_id: user?.id})
+      }else{
+        response = await editSalonSpaById({
+          id: initialValues.id,
+          payload: values
+        });
+      }
+      if (response.success) {
+        toast.success(response.message)
+        router.push('/admin/salons-spas')
+      }else{
+        toast.error(response.message);
+      }
+      
+
+    } catch (error:any) {
+      toast.error(error.message)
+    }finally{
+      setLoading(false);
+    }
+  };
+
+  const onWorkingDayChange = (day: string) => {
+    try {
+      const prevValues = form.getValues("working_days");
+      if (prevValues.includes(day)) {
+        form.setValue(
+          "working_days",
+          prevValues.filter((d) => d !== day),
+        );
+      } else {
+        form.setValue("working_days", [...prevValues, day]);
+      }
+    } catch (error: any) {
+      toast.message(error);
+    }
   };
 
   return (
     <div className="mt-7">
-      SalonSpaForms
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField
@@ -174,7 +223,6 @@ function SalonSpaForms() {
             />
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-            
             <FormField
               control={form.control}
               name="minimum_service_price"
@@ -230,12 +278,14 @@ function SalonSpaForms() {
                   <Select>
                     <FormControl>
                       <SelectTrigger className="w-full">
-                        <SelectValue placeholder='Select offer status' />
+                        <SelectValue placeholder="Select offer status" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {offerStatuses.map((status)=>(
-                        <SelectItem key={status.value} value={status.value}>{status.label}</SelectItem>
+                      {offerStatuses.map((status) => (
+                        <SelectItem key={status.value} value={status.value}>
+                          {status.label}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -243,6 +293,147 @@ function SalonSpaForms() {
                 </FormItem>
               )}
             ></FormField>
+          </div>
+
+          <div className="p-5 border border-gray-300 rounded-md flex flex-col gap-5">
+            <h1 className="text sm font-semibold text-gray-600">
+              Working days
+            </h1>
+            <div className="flex flex-wrap gap-10">
+              {workingDays.map((day) => {
+                const prevValues = form.watch("working_days");
+                const isChecked = prevValues.includes(day.value);
+                return (
+                  <div className="flex gap-2 items-center" key={day.value}>
+                    <h1 className="text-sm">{day.label}</h1>
+                    <Checkbox
+                      onCheckedChange={() => onWorkingDayChange(day.value)}
+                      checked={isChecked}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="grid grid-cols-3 gap-5">
+              <FormField
+                control={form.control}
+                name="start_time"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Start time</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Start time" {...field} type="time" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="end_time"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>End time</FormLabel>
+                    <FormControl>
+                      <Input placeholder="End time" {...field} type="time" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="break_start_time"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Break start time</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Break start time"
+                        {...field}
+                        type="time"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="break_end_time"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Break end time</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Break end time"
+                        {...field}
+                        type="time"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="slot_duration"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Slot duration</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Slot duration"
+                        type="number"
+                        {...field}
+                        onChange={(e) => {
+                          form.setValue(
+                            "slot_duration",
+                            parseInt(e.target.value),
+                          );
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="max_bookings_per_slot"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Max bookig per slot</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Max bookig per slot"
+                        type="number"
+                        {...field}
+                        onChange={(e) => {
+                          form.setValue(
+                            "max_bookings_per_slot",
+                            parseInt(e.target.value),
+                          );
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
+
+          <div className="p-5 border border-gray-300 rounded-md flex flex-col gap-5">
+            map
+          </div>
+
+          <div className="flex justify-end gap-5">
+            <Button type="button" variant='outline' disabled={loading}>Cancelar</Button>
+            <Button type="submit" className="cursor-pointer" disabled={loading}>{formType === "add" ? "Agregar" : "Actualizar"}</Button>
           </div>
         </form>
       </Form>
