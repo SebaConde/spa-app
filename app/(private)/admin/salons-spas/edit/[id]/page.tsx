@@ -6,7 +6,7 @@ function EditSalonSpa() {
   return (
     <div>
       <PageTitle title="Edit Salons & Spas" />
-      <SalonSpaForms />
+      {/* <SalonSpaForms /> */}
     </div>
   )
 }
