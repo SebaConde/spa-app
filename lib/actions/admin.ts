@@ -36,7 +36,7 @@ export const getSalonsByOwner = async (owner_id: number) => {
   }
 };
 
-export const getSalonSpaById = async (salon_id: string) => {
+export const getSalonSpaById = async (salon_id: number) => {
     try {
         const {data, error} = await supabase.from('salons_spas').select('*').eq('id', salon_id);
         if(error || data.length===0) throw new Error('No se pudo encontrar ningún salón con ese id.')
@@ -54,8 +54,9 @@ export const getSalonSpaById = async (salon_id: string) => {
 
 export const editSalonSpaById = async ({id, payload} : {id: number,payload: any }) => {
 try {
-    const {data, error} = await supabase.from('salon_spas').update(payload).eq('id', id);
-     if(error) throw new Error('No se pudo actualizar el salón.');
+    const {data, error} = await supabase.from('salons_spas').update(payload).eq('id', id);
+    if(error) throw new Error('No se pudo actualizar el salón.');
+      
      return{
         success: true,
         message: 'Salon actualizado correctamente.'
@@ -68,7 +69,7 @@ try {
 }
 };
 
-export const deleteSalonSpaById = async (salon_id: string) => {
+export const deleteSalonSpaById = async (salon_id: number) => {
     try {
         const {error} = await supabase.from('salons_spas').delete().eq('id',salon_id);
          if(error) throw new Error('No se pudo eliminar el salón.');

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -136,6 +136,15 @@ function SalonSpaForms({ initialValues, formType }: SalonSpaFormProps) {
       toast.message(error);
     }
   };
+
+  useEffect(()=>{
+    if (initialValues) {
+      Object.keys(initialValues).forEach((key: any) =>{
+        form.setValue(key, initialValues[key]);
+      });
+      form.setValue('zip', initialValues.zip.toString())
+    }
+  }, [initialValues])
 
   return (
     <div className="mt-7">
@@ -275,10 +284,10 @@ function SalonSpaForms({ initialValues, formType }: SalonSpaFormProps) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Offer status</FormLabel>
-                  <Select>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select offer status" />
+                        <SelectValue placeholder="Select offer status"/>
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -289,7 +298,7 @@ function SalonSpaForms({ initialValues, formType }: SalonSpaFormProps) {
                       ))}
                     </SelectContent>
                   </Select>
-                  <FormDescription></FormDescription>
+                  <FormMessage />
                 </FormItem>
               )}
             ></FormField>
@@ -432,7 +441,7 @@ function SalonSpaForms({ initialValues, formType }: SalonSpaFormProps) {
           </div>
 
           <div className="flex justify-end gap-5">
-            <Button type="button" variant='outline' disabled={loading}>Cancelar</Button>
+            <Button type="button" variant='outline' disabled={loading} onClick={()=>router.push('/admin/salons-spas')}>Cancelar</Button>
             <Button type="submit" className="cursor-pointer" disabled={loading}>{formType === "add" ? "Agregar" : "Actualizar"}</Button>
           </div>
         </form>
