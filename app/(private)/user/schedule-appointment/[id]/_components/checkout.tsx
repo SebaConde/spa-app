@@ -35,12 +35,12 @@ function Checkout({ salonSpa }: { salonSpa: ISalon_Spa }) {
         <span className="text-sm">Select Date</span>
         <DatePicker
           selected={date}
-          onChange={(value) => setDate(value as Date)}
+          onChange={(value: Date | null) => setDate(value as Date)}
           className="border border-gray-700 p-2"
           minDate={new Date()}
-          filterDate={(date)=>{
+          filterDate={(date) => {
             const day = dayjs(date).format("dddd").toLowerCase();
-            
+
             return salonSpa.working_days.includes(day);
           }}
         />
@@ -62,7 +62,7 @@ function Checkout({ salonSpa }: { salonSpa: ISalon_Spa }) {
         </select>
       </div>
       <div className="flex justify-end">
-        <Button variant='outline'>Cancel</Button>
+        <Button variant="outline">Cancel</Button>
         <Button className="ml-3">Book Appointment</Button>
       </div>
     </div>
