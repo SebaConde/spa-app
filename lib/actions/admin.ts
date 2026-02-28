@@ -2,7 +2,6 @@
 "use server";
 
 import { supabase } from "@/src/config/supabase-config";
-import { flightRouterStateSchema } from "next/dist/server/app-render/types";
 
 export const createNewSalonSpa = async (payload: any) => {
   try {
@@ -84,3 +83,21 @@ export const deleteSalonSpaById = async (salon_id: number) => {
         }
     }
 };
+
+export const getAllSalonSpas = async ()=>{
+  try {
+    const {data,error} = await supabase.from('salons_spas').select('*');
+    if(error) throw error
+    return{
+      success:true,
+      data: data,
+    }
+
+
+  } catch (error: any) {
+    return{
+      success:false,
+    message: error.message,
+    }
+  }
+}

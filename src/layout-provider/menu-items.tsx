@@ -38,8 +38,8 @@ export default function MenuItems({
       icon: <LayoutDashboard size={13} className="text-black" />,
     },
     {
-      title: "Shcedule Apointment",
-      route: "/user/schedule-apointment",
+      title: "Schedule Apointment",
+      route: "/user/schedule-appointment",
       icon: <Calendar size={13} className="text-black" />,
     },
     {

@@ -30,6 +30,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import userGlobalStore, { IUserGlobalStore } from "@/src/store/users-global-store";
 import { createNewSalonSpa, editSalonSpaById } from "@/lib/actions/admin";
+import LocationSelection from "./location-selection";
 
 interface SalonSpaFormProps {
   initialValues?: any;
@@ -437,7 +438,17 @@ function SalonSpaForms({ initialValues, formType }: SalonSpaFormProps) {
           </div>
 
           <div className="p-5 border border-gray-300 rounded-md flex flex-col gap-5">
-            map
+            <LocationSelection selectedLocationObject={{
+              display_name : form.watch('latitude'),
+              lat: form.watch('latitude'),
+              lon: form.watch('longitude'),
+            }} 
+            setSelectedLocationObject={(location)=>{
+              form.setValue('latitude', location.lat);
+              form.setValue('longitude', location.lon);
+              form.setValue('location_name', location.display_name);
+            }}
+            />
           </div>
 
           <div className="flex justify-end gap-5">
