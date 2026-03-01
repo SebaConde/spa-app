@@ -34,3 +34,18 @@ export interface ISalon_Spa {
   created_at: string;
   updated_at: string;
 }
+
+export interface IAppointment {
+  id: number;
+  user_id: number;
+  salon_spa_id: number;
+  owner_id: number;
+  date: string;
+  time: string;
+  status: "booked" | "completed" | "cancelled";
+  created_at: string;
+  updated_at: string;
+
+  user_data: IUser;
+  salon_spa_data: ISalon_Spa;
+}

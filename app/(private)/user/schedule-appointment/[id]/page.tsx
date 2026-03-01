@@ -30,7 +30,7 @@ async function BookAppointmentPage({ params }: Props) {
 
   return (
     <div>
-      <PageTitle title="BookAppointmentPague" />
+      <PageTitle title="Book appointment page" />
       <div className="mt-7 grid grid-cols-3 gap-10">
         <div className="col-span-2 p-5 border border-gray-400 flex flex-col gap-1">
           {renderProperty("Name", salonData.name)}
@@ -41,6 +41,9 @@ async function BookAppointmentPage({ params }: Props) {
           {renderProperty("Minimum service price", salonData.minimum_service_price)}
           {renderProperty("Maximum service price", salonData.maximum_service_price)}
           {renderProperty("Offer status", salonData.offer_status)}
+          {renderProperty("Start time", salonData.start_time)}
+          {renderProperty("End time", salonData.end_time)}
+          {renderProperty("Slot duration", salonData.slot_duration)}
 
           <hr className="border border-gray-300 my-5" />
           <p className="text-gray-700 text-sm">{salonData.description}</p>
