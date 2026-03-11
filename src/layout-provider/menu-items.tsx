@@ -44,7 +44,7 @@ export default function MenuItems({
     },
     {
       title: "My Appointments",
-      route: "/user/my-appointments",
+      route: "/user/appointments",
       icon: <List size={13} className="text-black" />,
     },
     {

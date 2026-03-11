@@ -26,12 +26,15 @@ export const getAppointmentsByUserId = async (userId: number) => {
   try {
     const { data, error } = await supabase
       .from("appointments")
-      .select("*")
+      .select("*, salons_spas(id,name)")
       .eq("user_id", userId);
     if (error) throw new Error(error.message);
     return {
       success: true,
-      data: data,
+      data: data.map((appointment: any)=>({
+        ...appointment,
+        salon_spa_data: appointment.salons_spas
+      })),
     };
   } catch (error: any) {
     return {
@@ -100,3 +103,22 @@ export const getSaloonAvailability = async ({
     };
   }
 };
+
+export const updateAppointmentStatus = async (id:number, status:string)=>{
+  try {
+    const{data, error} = await supabase.from('appointments').update({status}).eq('id', id);
+    if (error) {
+      throw new Error(error.message);
+    }else{
+      return{
+        success:true,
+        data,
+      }
+    };
+  } catch (error:any) {
+    return{
+      success:false,
+      message: error.message,
+    }
+  }
+}

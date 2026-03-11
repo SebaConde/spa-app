@@ -7,3 +7,9 @@ export const workingDays = [
   { value: "saturday", label: "Sabado" },
   { value: "sunday", label: "Domingo" },
 ];
+
+export const appointmentSatuses = [
+  { value: "booked", label: "Booked" },
+  { value: "cancelled", label: "Cancelled" },
+  { value: "completed", label: "Completed" },
+];
