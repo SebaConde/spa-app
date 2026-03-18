@@ -66,7 +66,7 @@ export default function MenuItems({
       icon: <List size={13} className="text-black" />,
     },
     {
-      title: "My Appointments",
+      title: "Appointments",
       route: "/admin/appointments",
       icon: <Calendar size={13} className="text-black" />,
     },

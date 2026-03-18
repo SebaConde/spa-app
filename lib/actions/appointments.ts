@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
-
 import { supabase } from "@/src/config/supabase-config";
 import { ISalon_Spa } from "@/src/interfaces";
 
@@ -27,7 +26,7 @@ export const getAppointmentsByUserId = async (userId: number) => {
     const { data, error } = await supabase
       .from("appointments")
       .select("*, salons_spas(id,name)")
-      .eq("user_id", userId);
+      .eq("user_id", userId).order('created_at', {ascending: false});
     if (error) throw new Error(error.message);
     return {
       success: true,
@@ -44,16 +43,39 @@ export const getAppointmentsByUserId = async (userId: number) => {
   }
 };
 
-export const getAppointmentsByOwnerId = async (ownerId: number) => {
+export const getAppointmentsByOwnerId = async (ownerId: number, filters:{
+  status: string | null,
+  salon_spa_id:number | null,
+  date: string | null,
+}) => {
   try {
-    const { data, error } = await supabase
+
+    let qry = supabase
       .from("appointments")
-      .select("*")
-      .eq("owner_id", ownerId);
+      .select("*, salons_spas(id, name), user_profile(id, name)")
+      .eq("owner_id", ownerId).order('created_at', {ascending: false});
+
+    if(filters.status){
+      qry = qry.eq('status', filters.status)
+    }
+
+    if (filters.salon_spa_id) {
+      qry = qry.eq('salon_spa_id', filters.salon_spa_id)
+    }
+
+    if (filters.date) {
+      qry = qry.eq('date', filters.date)
+    }
+
+    const { data, error } = await qry;
     if (error) throw new Error(error.message);
     return {
       success: true,
-      data: data,
+      data: data.map((appointment:any)=>({
+        ...appointment,
+        salon_spa_data: appointment.salons_spas,
+        user_data: appointment.user_profile,
+      })),
     };
   } catch (error: any) {
     return {
@@ -113,6 +135,7 @@ export const updateAppointmentStatus = async (id:number, status:string)=>{
       return{
         success:true,
         data,
+        message: 'Estado de la reserva actualizado'
       }
     };
   } catch (error:any) {

@@ -10,7 +10,7 @@ export default function Home() {
       <div className="flex justify-between items-center bg-gray-200 py-5 px-20">
         <h1 className="font-bold text-2xl text-black">SPA</h1>
         <Button>
-          <Link href='/login'> Login</Link>
+          <Link href="/login"> Login</Link>
         </Button>
       </div>
       <div className="bg-white mt-20 lg:grid-cols-2 grid-cols-1 px-20 min-h-[70vh] items-center grid gap-10">

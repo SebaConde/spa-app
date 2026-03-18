@@ -92,6 +92,7 @@ function Checkout({ salonSpa }: { salonSpa: ISalon_Spa }) {
           onChange={(value: Date | null) => setDate(value as Date)}
           className="border border-gray-700 p-2"
           minDate={new Date()}
+          dateFormat="dd/MM/yyyy"
           filterDate={(date) => {
             const day = dayjs(date).format("dddd").toLowerCase();
             return salonSpa.working_days.includes(day);
